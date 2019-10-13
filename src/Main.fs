@@ -8,20 +8,23 @@ type Page =
     | [<EndPoint "/temperature">] Temperature
     | [<EndPoint "/flight">] Flight
     | [<EndPoint "/timer">] Timer
+    | [<EndPoint "/crud">] Crud
 
 type Model =
     { page: Page
       counter: Counter.Model
       temperature: Temperature.Model
       flight: Flight.Model
-      timer: Timer.Model }
+      timer: Timer.Model
+      crud: Crud.Model }
 
 let initModel =
     { page = Counter
       counter = Counter.initModel
       temperature = Temperature.initModel
       flight = Flight.initModel
-      timer = Timer.initModel }
+      timer = Timer.initModel
+      crud = Crud.initialModel }
 
 type Message =
     | Goto of Page
@@ -29,6 +32,7 @@ type Message =
     | Temperature of Temperature.Message
     | Flight of Flight.Message
     | Timer of Timer.Message
+    | Crud of Crud.Message
 
 let update message model =
     match message with
@@ -42,6 +46,8 @@ let update message model =
         { model with flight = Flight.update message model.flight }
     | Message.Timer message ->
         { model with timer = Timer.update message model.timer }
+    | Message.Crud message ->
+        { model with crud = Crud.update message model.crud }
 
 let router = Router.infer Goto (fun m -> m.page)
 
@@ -51,6 +57,7 @@ let view model dispatch =
     | Page.Temperature -> Temperature.view model.temperature (dispatch << Message.Temperature)
     | Page.Flight -> Flight.view model.flight (dispatch << Message.Flight)
     | Page.Timer -> Timer.view model.timer (dispatch << Message.Timer)
+    | Page.Crud -> Crud.view model.crud (dispatch << Message.Crud)
 
 type MyApp() =
     inherit ProgramComponent<Model, Message>()

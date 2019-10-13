@@ -8,6 +8,7 @@
     <Compile Include="2-Temperature.fs" />
     <Compile Include="3-Flight.fs" />
     <Compile Include="4-Timer.fs" />
+    <Compile Include="5-Crud.fs" />
     <Compile Include="Main.fs" />
     <Compile Include="Startup.fs" />
   </ItemGroup>
