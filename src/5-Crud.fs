@@ -95,14 +95,17 @@ let view model dispatch =
         div [attr.``class`` "columns"] [
             div [attr.``class`` "column"] [
                 forEach (Seq.indexed model.people) <| fun (index, person) ->
-                    let isSelected =
-                        match model.selected with
-                        | Some selected -> selected = index
-                        | None -> false
-                    div [
-                        attr.classes [if isSelected then "selected"]
-                        on.click (fun _ -> dispatch (Select index))
-                    ] [textf "%s, %s" person.surname person.name]
+                    cond (person.surname.StartsWith model.filter) <| function
+                    | false -> empty
+                    | true ->
+                        let isSelected =
+                            match model.selected with
+                            | Some selected -> selected = index
+                            | None -> false
+                        div [
+                            attr.classes [if isSelected then "selected"]
+                            on.click (fun _ -> dispatch (Select index))
+                        ] [textf "%s, %s" person.surname person.name]
             ]
             div [attr.``class`` "column"] [
                 div [] [
