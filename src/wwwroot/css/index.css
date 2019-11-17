@@ -5,3 +5,13 @@
 .selected {
     background: lightblue;
 }
+
+.circles {
+    width: 100%;
+    height: 500px;
+    border: solid 1px black;
+}
+
+.modal-content input[type=range] {
+    width: 500px;
+}

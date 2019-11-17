@@ -9,6 +9,7 @@ type Page =
     | [<EndPoint "/flight">] Flight
     | [<EndPoint "/timer">] Timer
     | [<EndPoint "/crud">] Crud
+    | [<EndPoint "/circles">] Circles
 
 type Model =
     { page: Page
@@ -16,7 +17,8 @@ type Model =
       temperature: Temperature.Model
       flight: Flight.Model
       timer: Timer.Model
-      crud: Crud.Model }
+      crud: Crud.Model
+      circles: Circles.Model }
 
 let initModel =
     { page = Counter
@@ -24,7 +26,8 @@ let initModel =
       temperature = Temperature.initModel
       flight = Flight.initModel
       timer = Timer.initModel
-      crud = Crud.initialModel }
+      crud = Crud.initialModel
+      circles = Circles.initialModel }
 
 type Message =
     | Goto of Page
@@ -33,6 +36,7 @@ type Message =
     | Flight of Flight.Message
     | Timer of Timer.Message
     | Crud of Crud.Message
+    | Circles of Circles.Message
 
 let update message model =
     match message with
@@ -48,6 +52,8 @@ let update message model =
         { model with timer = Timer.update message model.timer }
     | Message.Crud message ->
         { model with crud = Crud.update message model.crud }
+    | Message.Circles message ->
+        { model with circles = Circles.update message model.circles }
 
 let router = Router.infer Goto (fun m -> m.page)
 
@@ -58,6 +64,7 @@ let view model dispatch =
     | Page.Flight -> Flight.view model.flight (dispatch << Message.Flight)
     | Page.Timer -> Timer.view model.timer (dispatch << Message.Timer)
     | Page.Crud -> Crud.view model.crud (dispatch << Message.Crud)
+    | Page.Circles -> Circles.view model.circles (dispatch << Message.Circles)
 
 type MyApp() =
     inherit ProgramComponent<Model, Message>()
@@ -65,6 +72,7 @@ type MyApp() =
     override this.Program =
         Program.mkSimple (fun _ -> initModel) update view
         |> Program.withRouter router
-        |> Program.withSubscription (fun _ ->
-            Timer.subscribe () |> Cmd.map Message.Timer
-        )
+        //|> Program.withSubscription (fun _ ->
+        //    Timer.subscribe () |> Cmd.map Message.Timer
+        //)
+        |> Program.withConsoleTrace
